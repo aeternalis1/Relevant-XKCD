@@ -1,7 +1,8 @@
 from scraper import get_info, scrape_pages
 from processor import get_relevance, get_related_comics
 from nltk.corpus import wordnet
-from database import reset_data
+from database import reset_data, retrieve_data
+import time
 
 '''
 comic = get_info(2276)
@@ -14,27 +15,25 @@ text = clean_text(comic.title_text.split())
 print (text)
 '''	
 
-def query(word, comics, wordbank):
-		pos = get_related_comics(word, wordbank)
-		print (pos)
-		cand = [[get_relevance(word, comics[comic_id]), comic_id] for comic_id in pos]
-		cand = sorted(cand,reverse = True)
-		return cand[0]
+def query(word, comics, wordbank, start):
+	print (time.time()-start)
+	pos = get_related_comics(word, wordbank)
+	print (time.time()-start)
+	cand = [[get_relevance(word, comics[str(comic_id)]), comic_id] for comic_id in pos]
+	print (time.time()-start)
+	cand = sorted(cand,reverse = True)
+	return cand[0]
 
 
 def main():
 	#reset_data()
-	
-	comics, wordbank = scrape_pages()
+	start = time.time()
+	comics, wordbank = retrieve_data()
 
-	word = "coronavirus"
+	word = "thumbtacks"
 
-	w1 = wordnet.synset('safe.a.01')
-	w2 = wordnet.synset('secure.a.01')
-	print(w1.path_similarity(w2))
-
-	print (query(word, comics, wordbank))
-	
+	print (query(word, comics, wordbank, start))
+	print ("TOTAL TIME",time.time()-start)
 
 
 if __name__ == '__main__':

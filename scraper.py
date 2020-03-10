@@ -66,7 +66,7 @@ num_xkcd = 2277
 def scrape_pages():
 	comics = {}
 	wordbank = {}
-	for i in range(2274, num_xkcd+1):
+	for i in range(2200, num_xkcd+1):
 		comic = get_info(i)
 		words = {}
 		for word in comic.title + comic.transcript + comic.title_text + comic.explanation:

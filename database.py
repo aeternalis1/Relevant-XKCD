@@ -23,7 +23,11 @@ def reset_data():
 
 # gets comics, wordbank
 def retrieve_data():
-	pass
+	wordbank_file = open('wordbank.txt')
+	wordbank = json.load(wordbank_file)
+	comics_file = open('comics.txt')
+	comics = json.load(comics_file)
+	return comics, wordbank
 
 
 # updates data with new comic
