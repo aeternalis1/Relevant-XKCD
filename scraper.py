@@ -66,20 +66,23 @@ num_xkcd = 2277
 def scrape_pages():
 	comics = {}
 	wordbank = {}
-	for i in range(2200, num_xkcd+1):
-		comic = get_info(i)
-		words = {}
-		for word in comic.title + comic.transcript + comic.title_text + comic.explanation:
-			if word in words:
-				words[word] += 1
-			else:
-				words[word] = 1
-		for word in words:
-			if word in wordbank:
-				wordbank[word].append([words[word], comic.id])
-			else:
-				wordbank[word] = [[words[word], comic.id]]
-		comics[comic.id] = comic
+	for i in range(1, num_xkcd+1):
+		try:
+			comic = get_info(i)
+			words = {}
+			for word in comic.title + comic.transcript + comic.title_text + comic.explanation:
+				if word in words:
+					words[word] += 1
+				else:
+					words[word] = 1
+			for word in words:
+				if word in wordbank:
+					wordbank[word].append([words[word], comic.id])
+				else:
+					wordbank[word] = [[words[word], comic.id]]
+			comics[comic.id] = comic
+		except:
+			continue
 
 	for word in wordbank:
 		wordbank[word] = sorted(wordbank[word], reverse = True)

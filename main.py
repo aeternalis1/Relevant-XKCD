@@ -4,22 +4,11 @@ from nltk.corpus import wordnet
 from database import reset_data, retrieve_data
 import time
 
-'''
-comic = get_info(2276)
-
-text = clean_text(comic.title.split())
-print (text)
-text = clean_text(comic.transcript.split())
-print (text)
-text = clean_text(comic.title_text.split())
-print (text)
-'''	
-
-def query(word, comics, wordbank, start):
+def query(keywords, comics, wordbank, start):
 	print (time.time()-start)
-	pos = get_related_comics(word, wordbank)
+	pos = get_related_comics(keywords, wordbank)
 	print (time.time()-start)
-	cand = [[get_relevance(word, comics[str(comic_id)]), comic_id] for comic_id in pos]
+	cand = [[get_relevance(keywords, comics[str(comic_id)]), comic_id] for comic_id in pos]
 	print (time.time()-start)
 	cand = sorted(cand,reverse = True)
 	return cand[0]
@@ -30,9 +19,9 @@ def main():
 	start = time.time()
 	comics, wordbank = retrieve_data()
 
-	word = "thumbtacks"
-
-	print (query(word, comics, wordbank, start))
+	keywords = ["correlation","causation"]
+	print ("HERE")
+	print (query(keywords, comics, wordbank, start))
 	print ("TOTAL TIME",time.time()-start)
 
 
