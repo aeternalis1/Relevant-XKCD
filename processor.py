@@ -7,27 +7,32 @@ nlp = spacy.load('en_core_web_md')
 # ([str], [str]) -> float
 # takes list of key words and reference text, returns comparison
 def relevance(keywords, words):
-	res = [0]
 	tokens = nlp(" ".join(keywords + words))
+	weight = [[0] for x in range(len(keywords))]
 	keys = [tokens[x] for x in range(len(keywords))]
 	for i in range(len(keywords), len(tokens)):
 		token2 = tokens[i]
-		for token in keys:
+		for j in range(len(keys)):
+			token = keys[j]
 			if token.text == token2.text:
-				res.append(1)
+				weight[j].append(1)
 			elif token.has_vector and token2.has_vector:
 				cur = token.similarity(token2)
-				res.append(cur)
-	res = sorted(res, reverse=True)
-	num = min(10, len(res))
-	return sum(res[:num]) / num
+				weight[j].append(cur)
+	res = 0
+	for i in range(len(keys)):
+		weight[i] = sorted(weight[i],reverse=True)
+		num = min(20, len(weight[i]))
+		res += (1/len(keys)) * (sum(weight[i][:num]) / num)
+	return res
 
 
 # (str, Comic) -> float
 # gets relevance of comic to a word, represented as a float between 0-1
 def get_relevance(keywords, comic):
-	res = 20 * relevance(keywords, comic['title']) + 10 * relevance(keywords, comic['title_text'])
-	res += 10 * relevance(keywords, comic['transcript']) + relevance(keywords, comic['explanation'])
+	res = 0.3 * (relevance(keywords, comic['title_text']) + relevance(keywords, comic['transcript']))
+	res += 0.2 * relevance(keywords, comic['explanation'])
+	res *= min(relevance(keywords, comic['title']) + 1, 1/res)
 	return res
 
 
