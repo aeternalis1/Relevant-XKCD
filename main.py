@@ -2,11 +2,13 @@ from scraper import get_info, scrape_pages
 from processor import get_relevance, get_related_comics
 from nltk.corpus import wordnet
 from database import reset_data, retrieve_data
+from mongo import get_comic
 import time
 
 def query(keywords, comics, wordbank, start):
+	start = time.time()
 	pos = get_related_comics(keywords, wordbank)
-	cand = [[get_relevance(keywords, comics[str(comic_id)]), comic_id] for comic_id in pos]
+	cand = [[get_relevance(keywords, get_comic(comic_id)), comic_id] for comic_id in pos]
 	cand = sorted(cand,reverse = True)
 	num = min(5,len(cand))
 	if not cand:
@@ -23,6 +25,8 @@ def main():
 		try:
 			keywords = input().split()
 		except:
+			return
+		if keywords == ['quit']:
 			return
 		result = query(keywords, comics, wordbank, start)
 		print ("\n".join(result))

@@ -1,6 +1,8 @@
 from models import Comic
 from nltk.corpus import wordnet
+from mongo import get_word_comics
 import spacy
+import math
 
 nlp = spacy.load('en_core_web_md') 
 
@@ -19,20 +21,23 @@ def relevance(keywords, words):
 			elif token.has_vector and token2.has_vector:
 				cur = token.similarity(token2)
 				weight[j].append(cur)
-	res = 0
+	res = 1
 	for i in range(len(keys)):
 		weight[i] = sorted(weight[i],reverse=True)
-		num = min(20, len(weight[i]))
-		res += (1/len(keys)) * (sum(weight[i][:num]) / num)
+		num = min(15, 2*int(math.sqrt(len(words)))+1)
+		res *= (sum(weight[i][:num]) / num)
 	return res
 
 
 # (str, Comic) -> float
 # gets relevance of comic to a word, represented as a float between 0-1
 def get_relevance(keywords, comic):
-	res = 0.3 * (relevance(keywords, comic['title_text']) + relevance(keywords, comic['transcript']))
+	res = 0.4 * (relevance(keywords, comic['title_text']) + relevance(keywords, comic['transcript']))
 	res += 0.2 * relevance(keywords, comic['explanation'])
-	res *= min(relevance(keywords, comic['title']) + 1, 1/res)
+	if res:
+		res *= min(relevance(keywords, comic['title']) + 1, 1/res)
+	else:
+		res = relevance(keywords, comic['title'])
 	return res
 
 
@@ -51,9 +56,10 @@ def get_related_comics(keywords, wordbank):
 			pass
 
 		for word in set(cand):
-			if word not in wordbank:
+			comics = get_word_comics(word)
+			if not comics:
 				continue
-			for [occ, comic_id] in wordbank[word]:
+			for [occ, comic_id] in comics:
 				if comic_id in res:
 					res[comic_id] += occ
 				else:
