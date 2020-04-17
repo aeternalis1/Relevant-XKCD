@@ -1,8 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
-from models import Comic
-from utils import clean_text
-from mongo import update_wordbank_many, update_comics_many
+from .models import Comic
+from .utils import clean_text
+from .update_db import update_wordbank_many, update_comics_many
 
 def make_soup(url):
     try:
@@ -14,7 +14,7 @@ def make_soup(url):
 
 def get_info(comic_num):
 
-	URL = "https://www.explainxkcd.com/wiki/index.php/" + str(comic_num)
+	URL = "https://www.explainxkcd.com/wiki/index.php/%s" % str(comic_num)
 	soup = make_soup(URL)
 	if soup == None:
 		return "Error: comic %d not found" % comic_num
@@ -91,5 +91,7 @@ def scrape_pages():
 	update_wordbank_many(wordbank)
 	update_comics_many(comics)
 
+'''
 if __name__ == "__main__":
 	scrape_pages()
+'''

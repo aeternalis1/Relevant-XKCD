@@ -1,9 +1,10 @@
 import pymongo
+from .instance.config import MONGO_URI
 
-client = pymongo.MongoClient("mongodb+srv://m001-student:m001-mongodb-basics@sandbox-qtnas.mongodb.net/test?retryWrites=true&w=majority")
+client = pymongo.MongoClient(MONGO_URI)
+db = client["xkcd"]
 
 def insert_comic(comic):
-	db = client["xkcd"]
 	col = db["comics"]
 	doc = {
 		"_id": comic.id,
@@ -19,7 +20,6 @@ def insert_comic(comic):
 
 
 def update_wordbank_one(comic):		# updates wordbank with single new comic
-	db = client["xkcd"]
 	col = db["wordbank"]
 	words = {}
 	for word in comic.title + comic.transcript + comic.title_text + comic.explanation:
@@ -51,7 +51,6 @@ def update_wordbank_one(comic):		# updates wordbank with single new comic
 
 
 def update_wordbank_many(wordbank):		# updates given list of words
-	db = client["xkcd"]
 	col = db["wordbank"]
 
 	col.delete_many({"_id": {"$in": list(wordbank.keys())}})
@@ -64,7 +63,6 @@ def update_wordbank_many(wordbank):		# updates given list of words
 
 
 def update_comics_many(comics):		# updates list of comics
-	db = client["xkcd"]
 	col = db["comics"]
 
 	col.delete_many({"_id": {"$in": [comics[comic].id for comic in comics]}})
@@ -79,27 +77,3 @@ def update_comics_many(comics):		# updates list of comics
 						"explanation": comics[comic].explanation
 						})
 	col.insert_many(to_insert)
-
-
-def get_comic(comic_num):
-	db = client["xkcd"]
-	col = db["comics"]
-	try:
-		cursor = col.find({"_id": comic_num})
-		for doc in cursor:
-			return doc
-	except:
-		print ("Error fetching comic %d in database." % comic.id)
-	return None
-
-
-def get_word_comics(word):
-	db = client["xkcd"]
-	col = db["wordbank"]
-	try:
-		cursor = col.find({"_id": word})
-		for doc in cursor:
-			return doc["comics"]
-	except:
-		return None
-	return None

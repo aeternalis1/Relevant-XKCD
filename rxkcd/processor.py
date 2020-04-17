@@ -1,6 +1,5 @@
-from models import Comic
 from nltk.corpus import wordnet
-from mongo import get_word_comics
+from .db import get_word_comics
 import spacy
 import math
 
@@ -43,7 +42,7 @@ def get_relevance(keywords, comic):
 
 # ([str], dict()) -> [int]
 # returns list of comic ids
-def get_related_comics(keywords, wordbank):
+def get_related_comics(keywords):
 	res = {}
 	for word in keywords:
 		cand = [word]	#candidate words
