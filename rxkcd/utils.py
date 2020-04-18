@@ -14,4 +14,4 @@ def remove_formatting(word):
 def clean_text(word_list):
 	table = str.maketrans('', '', string.punctuation)
 	stripped = [(remove_formatting(w)).translate(table).lower() for w in word_list]
-	return stripped
+	return [x for x in stripped if x]	# remove all empty strings

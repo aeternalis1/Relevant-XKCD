@@ -12,6 +12,7 @@ def insert_comic(comic):
 		"transcript": comic.transcript,
 		"title_text": comic.title_text,
 		"explanation": comic.explanation,
+		"img_url": comic.img_url
 	}
 	try:
 		col.insert_one(doc)
@@ -53,8 +54,8 @@ def update_wordbank_one(comic):		# updates wordbank with single new comic
 def update_wordbank_many(wordbank):		# updates given list of words
 	col = db["wordbank"]
 
-	col.delete_many({"_id": {"$in": list(wordbank.keys())}})
-
+	col.delete_many({})
+	
 	to_insert = []
 	for word in wordbank:
 		comics = wordbank[word]
@@ -74,6 +75,17 @@ def update_comics_many(comics):		# updates list of comics
 						"title": comics[comic].title,
 						"title_text": comics[comic].title_text,
 						"transcript": comics[comic].transcript,
-						"explanation": comics[comic].explanation
+						"explanation": comics[comic].explanation,
+						"img_url": comics[comic].img_url
 						})
 	col.insert_many(to_insert)
+
+
+def update_url(comic_num, url):
+	col = db["comics"]
+	col.update_one({"_id": comic_num}, {"$set": {"img_url": url}})
+
+
+def update_title(comic_num, title):
+	col = db["comics"]
+	col.update_one({"_id": comic_num}, {"$set": {"title": title}})

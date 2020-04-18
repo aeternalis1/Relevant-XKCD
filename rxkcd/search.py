@@ -1,5 +1,6 @@
 from .processor import get_relevance, get_related_comics
 from .db import get_comic
+from .scraper import get_title, get_ttext
 
 def run(keywords):
 	pos = get_related_comics(keywords)
@@ -8,4 +9,13 @@ def run(keywords):
 	num = min(10,len(cand))
 	if not cand:
 		return None
-	return cand[:num]
+	res = []
+	for val, comic_id in cand[:num]:
+		comic = get_comic(comic_id)
+		res.append({'id': comic_id,
+					'val': val,
+					'url': comic['img_url'],
+					'title': get_title(comic_id),
+					'title_text': get_ttext(comic_id)
+					})
+	return res

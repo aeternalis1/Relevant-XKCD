@@ -29,5 +29,5 @@ def search(query):
 		if comics is None:
 			flash("No relevant XKCDs found.")
 		else:
-			print (comics)
+			return render_template('search.html', comics=comics)
 	return render_template('index.html')

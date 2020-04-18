@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block header %}
+	<h1>{% block title %} Relevant XKCD {% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+	<form method="post">
+		<label for="query"> New Search </label>
+		<input name="query" id="query" required>
+		<input type="submit" value="Search!">
+	</form>
+	{% for comic in comics %}
+		<article class="post">
+			<h1> XKCD {{comic['id']}}: {{comic['title']}} </h1>
+			<img src="{{comic['url']}}" title="{{comic['title_text']}}">
+		</article>
+		{% if not loop.last %}
+			<hr>
+		{% endif %}
+	{% endfor %}
+{% endblock %}

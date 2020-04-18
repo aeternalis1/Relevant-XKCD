@@ -1,8 +1,10 @@
-import requests
 from bs4 import BeautifulSoup
 from .models import Comic
 from .utils import clean_text
-from .update_db import update_wordbank_many, update_comics_many
+from .update_db import update_wordbank_many, update_comics_many, update_url, update_title
+import re
+import requests
+import time
 
 def make_soup(url):
     try:
@@ -12,8 +14,37 @@ def make_soup(url):
     return BeautifulSoup(html, features="html.parser")
 
 
-def get_info(comic_num):
+# gets image url for comic
+def get_img_url(comic_num):
+	URL = "https://www.xkcd.com/%s" % str(comic_num)
+	soup = make_soup(URL)
+	if soup == None:
+		return "Error: comic %d not found" % comic_num
+	res = str(soup.find(text=re.compile(r"Image URL \(for hotlinking/embedding\):"))).strip('\n')
+	return res[res.find("https"):].strip()
 
+
+# gets title of comic as uncleaned string
+def get_title(comic_num):
+	URL = "https://www.xkcd.com/%s" % str(comic_num)
+	soup = make_soup(URL)
+	if soup == None:
+		return "Error: comic %d not found" % comic_num
+	res = soup.find("div", {"id": "ctitle"})
+	return res.text
+
+
+#gets title text of comic as uncleaned string
+def get_ttext(comic_num):
+	URL = "https://www.xkcd.com/%s" % str(comic_num)
+	soup = make_soup(URL)
+	if soup == None:
+		return "Error: comic %d not found" % comic_num
+	res = soup.find("img", {"src": re.compile(r"imgs\.xkcd\.com/comics/")})
+	return res['title']
+
+
+def get_info(comic_num):
 	URL = "https://www.explainxkcd.com/wiki/index.php/%s" % str(comic_num)
 	soup = make_soup(URL)
 	if soup == None:
@@ -22,8 +53,7 @@ def get_info(comic_num):
 	result = Comic(comic_num)
 
 	# get title
-	for i in soup.find_all('title'):
-		result.title = clean_text(i.text.split())
+	result.title = clean_text(get_title(comic_num).split())
 
 	# get transcript
 	transcript = soup.find("span", {"id":"Transcript"})
@@ -56,10 +86,13 @@ def get_info(comic_num):
 		cur = cur.nextSibling
 	result.explanation = clean_text((" ".join(result.explanation)).split())
 
+	# get image URL
+	result.img_url = get_img_url(comic_num)
+
 	return result
 
 
-num_xkcd = 2293
+num_xkcd = 2295
 
 
 # gets comics and wordbank
@@ -91,7 +124,16 @@ def scrape_pages():
 	update_wordbank_many(wordbank)
 	update_comics_many(comics)
 
-'''
+
+def add_urls():
+	for i in range(1, num_xkcd+1):
+		update_url(i, get_img_url(i))
+
+
+def add_titles():
+	for i in range(1, num_xkcd+1):
+		update_title(i, get_title(i))
+
+
 if __name__ == "__main__":
-	scrape_pages()
-'''
+	print(get_ttext(1))
