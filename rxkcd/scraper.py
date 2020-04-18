@@ -128,7 +128,7 @@ def scrape_pages():
 			continue
 
 	for word in wordbank:
-		wordbank[word] = sorted(wordbank[word], reverse = True)
+		wordbank[word] = sorted(wordbank[word], reverse = True)[:min(20,len(wordbank[word]))]
 
 	update_wordbank_many(wordbank)
 	update_comics_many(comics)
@@ -143,6 +143,7 @@ def add_titles():
 	for i in range(1, num_xkcd+1):
 		update_title(i, get_title(i))
 
-
+'''
 if __name__ == "__main__":
 	print(get_ttext(1))
+'''

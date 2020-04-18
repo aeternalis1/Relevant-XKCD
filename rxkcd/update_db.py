@@ -37,18 +37,14 @@ def update_wordbank_one(comic):		# updates wordbank with single new comic
 			continue
 		for doc in cursor:
 			comics = doc["comics"]	# already sorted in reverse order (by assumption)
-			if not comics or comics[-1][0] > cnt:
+			if not comics or (comics[-1][0] > cnt and len(comics) < 20):
 				comics = comics + [[cnt, comic.id]]
 			else:
 				for i in range(len(comics)):
 					if cnt >= comics[i][0]:
 						comics.insert(i, [cnt, comic.id])
+						col.update_one({"_id": word}, {"$set": {"comics": comics}})
 						break
-			try:
-				col.update_one({"_id": word}, {"$set": {"comics": comics}})
-			except:
-				print ("Error updating word %s, comic %d." % (word, comic.id))
-				continue
 
 
 def update_wordbank_many(wordbank):		# updates given list of words
@@ -89,3 +85,16 @@ def update_url(comic_num, url):
 def update_title(comic_num, title):
 	col = db["comics"]
 	col.update_one({"_id": comic_num}, {"$set": {"title": title}})
+
+
+# temporary function: cut entries in wordbank down to 20 comics
+def trim_db():
+	col = db["wordbank"]
+	for doc in col.find():
+		comics = doc["comics"]
+		if len(comics) > 20:
+			col.update_one({"_id": doc["_id"]}, {"$set": {"comics": comics[:20]}})
+
+
+if __name__ == "__main__":
+	trim_db()

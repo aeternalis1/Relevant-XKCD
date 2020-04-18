@@ -66,4 +66,4 @@ def get_related_comics(keywords):
 
 	res = sorted([[res[comic_id], comic_id] for comic_id in res], reverse=True)
 
-	return [x[1] for x in res][:min(len(res), 20)]
+	return [x[1] for x in res][:min(20,len(res))]
