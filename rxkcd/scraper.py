@@ -41,7 +41,16 @@ def get_ttext(comic_num):
 	if soup == None:
 		return "Error: comic %d not found" % comic_num
 	res = soup.find("img", {"src": re.compile(r"imgs\.xkcd\.com/comics/")})
-	return res['title']
+	try:
+		return res['title']
+	except:		# title text unavailable? take it from ExplainXKCD
+		URL2 = "https://www.explainxkcd.com/wiki/index.php/%s" % str(comic_num)
+		soup2 = make_soup(URL2)
+		for span in soup2.find_all("span"):
+			if span.text == 'Title text:':
+				cur = span.parent
+				return " ".join(cur.text.split()[2:])
+		return "[Title text unavailable]"
 
 
 def get_info(comic_num):

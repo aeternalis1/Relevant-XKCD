@@ -10,9 +10,10 @@
 		<input name="query" id="query" required>
 		<input type="submit" value="Search!">
 	</form>
+	<h1> Search results for: {{query}}</h1>
 	{% for comic in comics %}
 		<article class="post">
-			<h1> XKCD {{comic['id']}}: {{comic['title']}} </h1>
+			<h2> {{comic['id']}}: {{comic['title']}} </h2>
 			<img src="{{comic['url']}}" title="{{comic['title_text']}}">
 		</article>
 		{% if not loop.last %}
