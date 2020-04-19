@@ -10,7 +10,7 @@
 		<input name="query" id="query" required>
 		<input type="submit" value="Search!">
 	</form>
-	<h1> Search results for: {{query}}</h1>
+	<h1> search results for: {{query}}</h1>
 	{% for comic in comics %}
 		<article class="comic">
 			<h2 id="ctitle" align="center"> {{comic['id']}}: {{comic['title']}} </h2>
