@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 from .models import Comic
 from .utils import clean_text
-from .update_db import update_wordbank_many, update_comics_many, update_url, update_title
+from .update_db import update_wordbank_many, update_comics_many, update_url, update_title, update_og_title, update_og_ttext
 import re
 import requests
 import time
@@ -31,7 +31,10 @@ def get_title(comic_num):
 	if soup == None:
 		return "Error: comic %d not found" % comic_num
 	res = soup.find("div", {"id": "ctitle"})
-	return res.text
+	try:
+		return res.text
+	except:
+		return "[Title unavailable]"
 
 
 #gets title text of comic as uncleaned string
@@ -62,7 +65,8 @@ def get_info(comic_num):
 	result = Comic(comic_num)
 
 	# get title
-	result.title = clean_text(get_title(comic_num).split())
+	result.og_title = get_title(comic_num)
+	result.title = clean_text(result.og_title)
 
 	# get transcript
 	transcript = soup.find("span", {"id":"Transcript"})
@@ -78,10 +82,8 @@ def get_info(comic_num):
 	result.transcript = clean_text((" ".join(result.transcript)).split())
 
 	# get title text
-	for span in soup.find_all("span"):
-		if span.text == 'Title text:':
-			cur = span.parent
-			result.title_text = clean_text(cur.text.split())
+	result.og_ttext = get_ttext(comic_num)
+	result.title_text = clean_text(result.og_ttext.split())
 
 	# get explanation 
 	explanation = soup.find("span", {"id":"Explanation"})
@@ -141,9 +143,20 @@ def add_urls():
 
 def add_titles():
 	for i in range(1, num_xkcd+1):
-		update_title(i, get_title(i))
+		update_title(i, clean_text(get_title(i).split()))
+
+
+def add_og_titles():
+	for i in range(1, num_xkcd+1):
+		update_og_title(i, get_title(i))
+
+
+def add_og_ttexts():
+	for i in range(1, num_xkcd+1):
+		update_og_ttext(i, get_ttext(i))
 
 '''
 if __name__ == "__main__":
-	print(get_ttext(1))
+	add_og_titles()
+	add_og_ttexts()
 '''

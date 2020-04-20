@@ -1,5 +1,6 @@
 from .db import *
 from .search import run
+from random import randint
 
 from flask import (
 	Blueprint, flash, g, redirect, render_template, request, session, url_for

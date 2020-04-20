@@ -1,6 +1,5 @@
 from .processor import get_relevance, get_related_comics
 from .db import get_comic
-from .scraper import get_title, get_ttext
 import time
 
 def run(keywords):
@@ -18,7 +17,7 @@ def run(keywords):
 		res.append({'id': comic_id,
 					'val': "%.3f" % val,
 					'url': comic['img_url'],
-					'title': get_title(comic_id),
-					'title_text': get_ttext(comic_id)
+					'title': comic['og_title'],
+					'title_text': comic['og_ttext']
 					})
 	return res

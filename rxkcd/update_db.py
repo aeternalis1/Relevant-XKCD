@@ -87,6 +87,16 @@ def update_title(comic_num, title):
 	col.update_one({"_id": comic_num}, {"$set": {"title": title}})
 
 
+def update_og_title(comic_num, title):
+	col = db["comics"]
+	col.update_one({"_id": comic_num}, {"$set": {"og_title": title}})
+
+
+def update_og_ttext(comic_num, ttext):
+	col = db["comics"]
+	col.update_one({"_id": comic_num}, {"$set": {"og_ttext": ttext}})
+
+
 # temporary function: cut entries in wordbank down to 20 comics
 def trim_db():
 	col = db["wordbank"]

@@ -6,3 +6,5 @@ class Comic:
 		self.transcript = ""
 		self.explanation = ""
 		self.img_url = ""
+		self.og_title = ""
+		self.og_ttext = ""
