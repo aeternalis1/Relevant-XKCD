@@ -11,7 +11,7 @@ def calc(a):	# function mapping [0,1] onto [0,1]
 
 # ([str], [str]) -> float
 # takes list of key words and reference text, returns comparison
-def relevance(keywords, words, comic_num):
+def relevance(keywords, words, comic_num):	# pass in comic_num for debugging purposes
 	lst = keywords+words
 	tokens = nlp(" ".join(keywords + words))
 	weight = [[0] for x in range(len(keywords))]
@@ -26,7 +26,7 @@ def relevance(keywords, words, comic_num):
 				cur = calc(token.similarity(token2))
 				weight[j].append(cur)
 
-	match = 2
+	match = 10
 	i = 0
 	while i < len(words):		# add heuristic for exact match
 		j = 0
@@ -38,13 +38,12 @@ def relevance(keywords, words, comic_num):
 
 	for i in range(len(weight)):
 		weight[i] = sorted(weight[i], reverse=True)
-		num = min(10, 2*int(math.sqrt(len(weight[i])))+1)
+		num = min(15, int(len(weight[i])/2)+1, len(weight[i]))
 		weight[i] = sum(weight[i][:num]) / num
 
 	res = (sum(weight)/len(weight)) * min(weight)
 
-	num = min(5, int(math.sqrt(len(words)))+1)
-	res = min(1, res * math.log(match,2))
+	res = min(1, res * math.log(match,10))
 
 	return res
 
@@ -52,38 +51,49 @@ def relevance(keywords, words, comic_num):
 # (str, Comic) -> float
 # gets relevance of comic to a word, represented as a float between 0-1
 def get_relevance(keywords, comic):
-	res = 0.4 * relevance(keywords, comic['title_text'] + comic['transcript'], comic['_id'])
-	res += 0.2 * relevance(keywords, comic['explanation'], comic['_id'])
+	res = 0.5 * relevance(keywords, comic['title_text'] + comic['transcript'], comic['_id'])
+	res += 0.3 * relevance(keywords, comic['explanation'], comic['_id'])
+	tmp = relevance(keywords, comic['title'], comic['_id'])
 	if res:
-		res *= min(relevance(keywords, comic['title'], comic['_id']) + 1, 1/res)
+		res = max(res, res*(tmp+0.8))
 	else:
-		res = relevance(keywords, comic['title'])
-	return res
+		res = tmp
+	res = max(res, math.sqrt(tmp))
+	return min(1,res)
 
 
 # ([str], dict()) -> [int]
 # returns list of comic ids
 def get_related_comics(keywords):
 	res = {}
-	for word in keywords:
-		cand = [word]	#candidate words
-
+	for keyword in keywords:
+		cand = [keyword]	#candidate words
 		try:
-			for syn in wordnet.synsets(word):
+			for syn in wordnet.synsets(keyword):
 				for l in syn.lemmas():
 					cand.append(l.name())
 		except:
 			pass
-
-		for word in set(cand):
+		cand = list(set(cand))
+		tokens = nlp(" ".join(cand))
+		for i in range(len(cand)):
+			word = cand[i]
 			comics = get_word_comics(word)
 			if not comics:
 				continue
+			mul = 1
+			if word == keyword:
+				mul = 1
+			elif tokens[0].has_vector and tokens[i].has_vector:
+				mul = calc(tokens[0].similarity(tokens[i]))
+			else:
+				mul = 0.5	# ehhhh suboptimal but unavoidable
+
 			for [occ, comic_id] in comics:
 				if comic_id in res:
-					res[comic_id] += occ
+					res[comic_id] += occ*mul
 				else:
-					res[comic_id] = occ
+					res[comic_id] = occ*mul
 
 	res = sorted([[res[comic_id], comic_id] for comic_id in res], reverse=True)
 
