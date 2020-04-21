@@ -1,4 +1,4 @@
-from .db import *
+from .db import get_img_url
 from .search import run
 from .scraper import num_xkcd
 from random import randint
