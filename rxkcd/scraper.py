@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 from .models import Comic
 from .utils import clean_text
-from .update_db import update_wordbank_many, update_comics_many, update_url, update_title, update_og_title, update_og_ttext
+from .update_db import *
 import re
 import requests
 import time
@@ -66,36 +66,42 @@ def get_info(comic_num):
 
 	# get title
 	result.og_title = get_title(comic_num)
-	result.title = clean_text(result.og_title)
+	result.title = clean_text(result.og_title.split())
 
 	# get transcript
-	transcript = soup.find("span", {"id":"Transcript"})
-	result.transcript = []
-	cur = transcript.parent
-	while cur:
-		if cur.name == 'dl':
-			for dd in cur:
-				result.transcript.append(str(dd).strip('<dd>').strip('</dd>'))
-		elif cur.name == 'span':
-			break
-		cur = cur.nextSibling
-	result.transcript = clean_text((" ".join(result.transcript)).split())
+	try:
+		transcript = soup.find("span", {"id":"Transcript"})
+		result.transcript = []
+		cur = transcript.parent
+		while cur:
+			if cur.name == 'dl':
+				for dd in cur:
+					result.transcript.append(str(dd).strip('<dd>').strip('</dd>'))
+			elif cur.name == 'span':
+				break
+			cur = cur.nextSibling
+		result.transcript = clean_text((" ".join(result.transcript)).split())
+	except:
+		result.transcript = []
 
 	# get title text
 	result.og_ttext = get_ttext(comic_num)
 	result.title_text = clean_text(result.og_ttext.split())
 
 	# get explanation 
-	explanation = soup.find("span", {"id":"Explanation"})
-	result.explanation = []
-	cur = explanation.parent
-	while cur:
-		if cur.name == 'p':
-			result.explanation.append(cur.text)
-		elif cur.name == 'span':
-			break
-		cur = cur.nextSibling
-	result.explanation = clean_text((" ".join(result.explanation)).split())
+	try:
+		explanation = soup.find("span", {"id":"Explanation"})
+		result.explanation = []
+		cur = explanation.parent
+		while cur:
+			if cur.name == 'p':
+				result.explanation.append(cur.text)
+			elif cur.name == 'span':
+				break
+			cur = cur.nextSibling
+		result.explanation = clean_text((" ".join(result.explanation)).split())
+	except:
+		result.explanation = []
 
 	# get image URL
 	result.img_url = get_img_url(comic_num)
@@ -136,6 +142,15 @@ def scrape_pages():
 	update_comics_many(comics)
 
 
+def add_comic(comic_num):
+	try:
+		comic = get_info(comic_num)
+	except:
+		return
+	update_wordbank_one(comic)
+	insert_comic(comic)
+
+
 def add_urls():
 	for i in range(1, num_xkcd+1):
 		update_url(i, get_img_url(i))
@@ -155,8 +170,6 @@ def add_og_ttexts():
 	for i in range(1, num_xkcd+1):
 		update_og_ttext(i, get_ttext(i))
 
-'''
+
 if __name__ == "__main__":
-	add_og_titles()
-	add_og_ttexts()
-'''
+	add_comic(1116)

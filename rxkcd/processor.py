@@ -39,6 +39,8 @@ def relevance(keywords, words, comic_num):	# pass in comic_num for debugging pur
 	for i in range(len(weight)):
 		weight[i] = sorted(weight[i], reverse=True)
 		num = min(15, int(len(weight[i])/2)+1, len(weight[i]))
+		if not num:
+			continue
 		weight[i] = sum(weight[i][:num]) / num
 
 	res = (sum(weight)/len(weight)) * min(weight)

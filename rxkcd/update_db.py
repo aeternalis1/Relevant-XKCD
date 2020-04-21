@@ -1,4 +1,5 @@
 import pymongo
+import requests
 from .instance.config import MONGO_URI
 
 client = pymongo.MongoClient(MONGO_URI)
@@ -6,16 +7,23 @@ db = client["xkcd"]
 
 def insert_comic(comic):
 	col = db["comics"]
+	col2 = db["imgurls"]
 	doc = {
 		"_id": comic.id,
 		"title": comic.title,
 		"transcript": comic.transcript,
 		"title_text": comic.title_text,
 		"explanation": comic.explanation,
-		"img_url": comic.img_url
+		"img_url": comic.img_url,
+		"og_title": comic.og_title,
+		"og_ttext": comic.og_ttext
 	}
 	try:
 		col.insert_one(doc)
+	except:
+		print ("Error inserting comic %d in database." % comic.id)
+	try:
+		col2.insert_one({"_id": comic.id, "img_url": comic.img_url})
 	except:
 		print ("Error inserting comic %d in database." % comic.id)
 
@@ -43,6 +51,8 @@ def update_wordbank_one(comic):		# updates wordbank with single new comic
 				for i in range(len(comics)):
 					if cnt >= comics[i][0]:
 						comics.insert(i, [cnt, comic.id])
+						if len(comics) > 20:
+							comics.pop(-1)
 						col.update_one({"_id": word}, {"$set": {"comics": comics}})
 						break
 
@@ -80,6 +90,8 @@ def update_comics_many(comics):		# updates list of comics
 def update_url(comic_num, url):
 	col = db["comics"]
 	col.update_one({"_id": comic_num}, {"$set": {"img_url": url}})
+	col2 = db["imgurls"]
+	col2.update_one({"_id": comic_num}, {"$set": {"img_url": url}})
 
 
 def update_title(comic_num, title):
@@ -106,5 +118,19 @@ def trim_db():
 			col.update_one({"_id": doc["_id"]}, {"$set": {"comics": comics[:20]}})
 
 
+def exists(path):
+    r = requests.head(path)
+    return r.status_code == requests.codes.ok
+
+
+# temporary function: add new collection for only image urls, for quicker access
+def add_url_col():
+	col = db["comics"]
+	col2 = db["imgurls"]
+	for comic in col.find():
+		if 'img_url' in comic and exists(comic['img_url']):
+			col2.insert_one({"_id": comic['_id'], "img_url": comic['img_url']})
+
+
 if __name__ == "__main__":
-	trim_db()
+	add_url_col()

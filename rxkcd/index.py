@@ -25,18 +25,18 @@ def index():
 
 @bp.route('/loading/<query>')
 def loading(query):
-	rand_comics = []
+	rand_urls = []
 	seen = []
-	while len(rand_comics) < 10:
+	while len(rand_urls) < 10:
 		num = randint(1,num_xkcd)
 		if num in seen:
 			continue
-		comic = get_comic(num)
+		comic = get_img_url(num)
 		if not comic or 'img_url' not in comic:
 			continue
 		seen.append(num)
-		rand_comics.append(comic)
-	return render_template('loading.html', query=query, comics=rand_comics)
+		rand_urls.append(comic['img_url'])
+	return render_template('loading.html', query=query, urls=rand_urls)
 
 
 @bp.route('/search/<query>/', methods=('GET', 'POST'))

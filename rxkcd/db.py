@@ -16,6 +16,17 @@ def get_comic(comic_num):
 	return None
 
 
+def get_img_url(comic_num):
+	col = db["imgurls"]
+	try:
+		cursor = col.find({"_id": comic_num})
+		for doc in cursor:
+			return doc
+	except:
+		print ("Error fetching comic %d in database." % comic.id)
+	return None
+
+
 def get_word_comics(word):
 	col = db["wordbank"]
 	try:
