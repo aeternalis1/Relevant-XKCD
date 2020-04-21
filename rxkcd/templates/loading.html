@@ -1,0 +1,20 @@
+<html>
+    <header><title>Loading</title></header>
+    <head>
+        <link rel="stylesheet" href="{{url_for('static', filename='loading.css')}}">
+    </head>
+    <body>
+        <div class="fadein">
+            <img id="f9" src="{{comics[8]['img_url']}}">
+            <img id="f8" src="{{comics[7]['img_url']}}">
+            <img id="f7" src="{{comics[6]['img_url']}}">
+            <img id="f6" src="{{comics[5]['img_url']}}">
+            <img id="f5" src="{{comics[4]['img_url']}}">
+            <img id="f4" src="{{comics[3]['img_url']}}">
+            <img id="f3" src="{{comics[2]['img_url']}}">
+            <img id="f2" src="{{comics[1]['img_url']}}">
+            <img id="f1" src="{{comics[0]['img_url']}}">
+        </div>
+    </body>
+    <script> window.location.replace('/search/{{query}}/'); </script>
+</html>
