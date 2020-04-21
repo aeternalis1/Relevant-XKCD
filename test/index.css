@@ -1,58 +1,81 @@
+body{
+  background-color: #96A8C8;
+}
+
+h1 {
+  font-family:Lucida,Helvetica,sans-serif;
+  font-variant: small-caps;
+  font-weight: 800;
+}
+
 .fadein {
   display: flex;
-  height:calc(100% - 64px);
+  height: 100%;
+  width: 100%;
   justify-content: center; /* center horizontal */
   align-items: center; /* center vertical */
   overflow: hidden;
 }
 
 .fadein img {
-    position: absolute;
-    -webkit-animation-name: fade;
-    -webkit-animation-iteration-count: infinite;
-    -webkit-animation-duration: 9s;
-    animation-name: fade;
-    animation-iteration-count: infinite;
-    animation-duration: 9s;
+  padding: 30px;
+  background: white;
+  border-style: solid;
+  border-width: 1.5px;
+  border-color: black;
+  border-radius: 12px;
+  position: absolute;
+  -webkit-animation-name: fade;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-duration: 10s;
+  animation-name: fade;
+  animation-iteration-count: infinite;
+  animation-duration: 10s;
+  width: auto;
+  height: 40%;
+  max-width: 80%;
 }
 
 @-webkit-keyframes fade {
-    0% {opacity: 0;}
-    5% {opacity: 1;}
-    10% {opacity: 0;}
-    100% {opacity: 0;}
+  0% {opacity: 0;}
+  6% {opacity: 1;}
+  12% {opacity: 0;}
+  100% {opacity: 0;}
 }
 @keyframes fade {
-    0% {opacity: 0;}
-    5% {opacity: 1;}
-    10% {opacity: 0;}
-    100% {opacity: 0;}
+  0% {opacity: 0;}
+  6% {opacity: 1;}
+  12% {opacity: 0;}
+  100% {opacity: 0;}
 }
 
-#f1 {
-  background-color: lightblue;
+#f9 {
+  -webkit-animation-delay: -9s;
 }
-#f2 {
+#f8 {
   -webkit-animation-delay: -8s;
 }
-#f3 {
+#f7 {
   -webkit-animation-delay: -7s;
 }
-#f4 {
+#f6 {
   -webkit-animation-delay: -6s;
 }
 #f5 {
   -webkit-animation-delay: -5s;
 }
-#f6 {
+#f4 {
   -webkit-animation-delay: -4s;
 }
-#f7 {
+#f3 {
   -webkit-animation-delay: -3s;
 }
-#f8 {
+#f2 {
   -webkit-animation-delay: -2s;
 }
-#f9 {
+#f1 {
   -webkit-animation-delay: -1s;
+}
+#f0 {
+  -webkit-animation-delay: 0s;
 }

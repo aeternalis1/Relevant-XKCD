@@ -27,7 +27,7 @@ def index():
 def loading(query):
 	rand_comics = []
 	seen = []
-	while len(rand_comics) < 9:
+	while len(rand_comics) < 10:
 		num = randint(1,num_xkcd)
 		if num in seen:
 			continue
