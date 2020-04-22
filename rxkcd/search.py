@@ -3,6 +3,7 @@ from .db import get_comic
 import time
 
 def run(keywords):
+	keywords = list(set(keywords))
 	pos = get_related_comics(keywords)
 	cand = []
 	for comic_id in pos:

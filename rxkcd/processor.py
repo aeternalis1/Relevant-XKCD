@@ -1,5 +1,6 @@
 from nltk.corpus import wordnet
 from .db import get_word_comics
+from .utils import clean_text
 import spacy
 import math
 
@@ -73,7 +74,7 @@ def get_related_comics(keywords):
 		try:
 			for syn in wordnet.synsets(keyword):
 				for l in syn.lemmas():
-					cand.append(l.name())
+					cand.append("".join(clean_text(l.name().split('_'))))
 		except:
 			pass
 		cand = list(set(cand))

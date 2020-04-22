@@ -39,13 +39,14 @@ def loading(query):
 	return render_template('loading.html', query=query, urls=rand_urls)
 
 
-@bp.route('/search/<query>/', methods=('GET', 'POST'))
+@bp.route('/search/<query>', methods=('GET', 'POST'))
 def search(query):
 	if request.method == 'POST':
 		query = request.form['query'].split()
 		clean_query = [x for x in clean_text(query) if x]
 		if not clean_query:
 			flash("Invalid query.")
+			return render_template('search.html', comics=comics, query=query.replace('-',' '))
 		else:
 			return redirect(url_for('index.loading', query=("-".join(clean_query))))
 	keywords = [x for x in clean_text(query.split('-')) if x]
