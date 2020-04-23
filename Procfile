@@ -1,1 +1,1 @@
-web: gunicorn rxkcd:create_app() --log-level debug
+web: gunicorn rxkcd:'create_app() --log-level debug
