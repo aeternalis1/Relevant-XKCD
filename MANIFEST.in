@@ -1,0 +1,3 @@
+include rxkcd/static
+graft rxkcd/templates
+global-exclude *.pyc

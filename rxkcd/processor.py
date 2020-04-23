@@ -27,16 +27,6 @@ def relevance(keywords, words, comic_num):	# pass in comic_num for debugging pur
 				cur = calc(token.similarity(token2))
 				weight[j].append(cur)
 
-	match = 10
-	i = 0
-	while i < len(words):		# add heuristic for exact match
-		j = 0
-		while i+j < len(words) and j < len(keywords) and words[i] == keywords[j]:
-			j += 1
-		if j == len(keywords):
-			match += 1
-		i += j+1
-
 	for i in range(len(weight)):
 		weight[i] = sorted(weight[i], reverse=True)
 		num = min(15, int(len(weight[i])/2)+1, len(weight[i]))
@@ -45,8 +35,6 @@ def relevance(keywords, words, comic_num):	# pass in comic_num for debugging pur
 		weight[i] = sum(weight[i][:num]) / num
 
 	res = (sum(weight)/len(weight)) * min(weight)
-
-	res = min(1, res * math.log(match,10))
 
 	return res
 
@@ -65,11 +53,29 @@ def get_relevance(keywords, comic):
 	return min(1,res)
 
 
+# (str, Comic) -> integer
+# gets number of exact matches of a sequence of keywords
+def get_matches(keywords, comic):
+	words = comic['title_text'] + comic['transcript'] + comic['explanation'] + comic['title']
+	i = 0
+	matches = 0
+	while i < len(words):		# add heuristic for exact match
+		j = 0
+		while i+j < len(words) and j < len(keywords) and words[i] == keywords[j]:
+			j += 1
+		if j == len(keywords):
+			matches += 1
+		i += j+1
+	return matches
+
+
 # ([str], dict()) -> [int]
 # returns list of comic ids
 def get_related_comics(keywords):
 	res = {}
+	cnt = {}
 	for keyword in keywords:
+		tmp = {}
 		cand = [keyword]	#candidate words
 		try:
 			for syn in wordnet.synsets(keyword):
@@ -84,6 +90,7 @@ def get_related_comics(keywords):
 			comics = get_word_comics(word)
 			if not comics:
 				continue
+			tot = sum([comic[0] for comic in comics])
 			mul = 1
 			if word == keyword:
 				mul = 1
@@ -93,10 +100,21 @@ def get_related_comics(keywords):
 				mul = 0.5	# ehhhh suboptimal but unavoidable
 
 			for [occ, comic_id] in comics:
-				if comic_id in res:
-					res[comic_id] += occ*mul
+				if comic_id in tmp:
+					tmp[comic_id] += (occ/tot)*mul
 				else:
-					res[comic_id] = occ*mul
+					tmp[comic_id] = (occ/tot)*mul
+
+		for comic_id in tmp:
+			if comic_id in res:
+				res[comic_id] = (res[comic_id]*cnt[comic_id]+tmp[comic_id])/(cnt[comic_id]+1)
+				cnt[comic_id] += 1
+			else:
+				res[comic_id] = tmp[comic_id]
+				cnt[comic_id] = 1
+
+	for comic_id in res:
+		res[comic_id] = (res[comic_id]*cnt[comic_id])/len(keywords)
 
 	res = sorted([[res[comic_id], comic_id] for comic_id in res], reverse=True)
 
