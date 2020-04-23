@@ -1,1 +1,1 @@
-web: gunicorn rxkcd:app
+web: gunicorn rxkcd:app --preload
