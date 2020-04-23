@@ -29,4 +29,3 @@ tqdm==4.45.0
 urllib3==1.25.9
 wasabi==0.6.0
 Werkzeug==1.0.1
-en-core-web-md==2.2.5
