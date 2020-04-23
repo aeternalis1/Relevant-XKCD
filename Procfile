@@ -1,1 +1,1 @@
-web: python run.py
+web: gunicorn --workers=5 run:app --timeout 60 --log-level debug
