@@ -1,1 +1,1 @@
-web: gunicorn --workers=5 app:app --timeout 60 --log-level debug
+web: gunicorn rxkcd:create_app() --log-level debug
