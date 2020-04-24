@@ -9,7 +9,7 @@ def create_app(test_config=None):
 	app.config.from_pyfile('config.py', silent=True)
 	app.secret_key = SECRET_KEY
 
-	from processor import nlp
+	from .processor import nlp
 
 	try:
 		os.makedirs(app.instance_path)
