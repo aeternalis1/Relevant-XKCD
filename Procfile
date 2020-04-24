@@ -1,0 +1,1 @@
+web: gunicorn --workers=5 rxkcd:app --preload
