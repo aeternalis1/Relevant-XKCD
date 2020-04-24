@@ -8,7 +8,8 @@ def create_app(test_config=None):
 	app = Flask(__name__, instance_relative_config=True)
 	app.config.from_pyfile('config.py', silent=True)
 	app.secret_key = SECRET_KEY
-	nlp = spacy.load('en_core_web_md')
+
+	from processor import nlp
 
 	try:
 		os.makedirs(app.instance_path)
