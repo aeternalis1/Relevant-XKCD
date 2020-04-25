@@ -172,4 +172,4 @@ def add_og_ttexts():
 
 
 if __name__ == "__main__":
-	add_comic(1116)
+	scrape_pages()

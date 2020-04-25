@@ -21,7 +21,7 @@ def run(keywords):
 		val = cand[i][0]
 		matches = cand[i][1]
 		if top:
-			cand[i][0] = val * pow(10, (matches/top-1))
+			cand[i][0] = val * pow(tot/top, (matches/top-1))
 
 	cand = sorted(cand,reverse=True)
 	num = min(10,len(cand))
