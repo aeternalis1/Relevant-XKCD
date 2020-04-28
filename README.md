@@ -10,9 +10,7 @@ Finds a relevant XKCD based on keywords
 
 ## Deployment
 
-This project can be found [here](https://rxkcd.herokuapp.com), deployed on Heroku. A few notes:
-* First bootup can be particularly slow and might crash, since the app idles after a certain length of disuse.
-* Long queries (in terms of number of keywords) can cause the app to crash because workers time out after 30 seconds without response.
+This project can be found [here](https://rxkcd.herokuapp.com), deployed on Heroku. Note that long queries (in terms of number of keywords) can cause the app to crash because workers time out after 30 seconds without response.
 
 ## Installation
 
