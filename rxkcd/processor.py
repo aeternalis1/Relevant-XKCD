@@ -61,7 +61,7 @@ def get_matches(keywords, comic):
 	matches = 0
 	while i < len(words):		# add heuristic for exact match
 		j = 0
-		while i+j < len(words) and j < len(keywords) and words[i] == keywords[j]:
+		while i+j < len(words) and j < len(keywords) and words[i+j] == keywords[j]:
 			j += 1
 		if j == len(keywords):
 			matches += 1
@@ -76,14 +76,17 @@ def get_related_comics(keywords):
 	cnt = {}
 	for keyword in keywords:
 		tmp = {}
-		cand = [keyword]	#candidate words
+		synonyms = [keyword]	#candidate words
 		try:
 			for syn in wordnet.synsets(keyword):
 				for l in syn.lemmas():
-					cand.append("".join(clean_text(l.name().split('_'))))
+					synonyms.append("".join(clean_text(l.name().split('_'))))
 		except:
 			pass
-		cand = list(set(cand))
+		cand = []
+		for word in synonyms:
+			if word not in cand:
+				cand.append(word)
 		tokens = nlp(" ".join(cand))
 		for i in range(len(cand)):
 			word = cand[i]
@@ -118,4 +121,4 @@ def get_related_comics(keywords):
 
 	res = sorted([[res[comic_id], comic_id] for comic_id in res], reverse=True)
 
-	return [x[1] for x in res][:min(20,len(res))]
+	return [x[1] for x in res][:min(30,len(res))]
