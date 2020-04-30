@@ -12,13 +12,15 @@
 	</form>
 	<h1> search results for: {{query}}</h1>
 	{% for comic in comics %}
-		<article class="comic">
-			<h2 id="ctitle" align="center"> {{comic['id']}}: {{comic['title']}} </h2>
-			<img src="{{comic['url']}}" title="{{comic['title_text']}}" class="center">
-			<h3 id="rel" align="center"> Relevance: {{comic['val']}} </h3>
-		</article>
-		{% if not loop.last %}
-			<hr>
+		{%if comic['id'] %}
+			<article class="comic">
+				<h2 id="ctitle" align="center"> {{comic['id']}}: {{comic['title']}} </h2>
+				<img src="{{comic['url']}}" title="{{comic['title_text']}}" class="center">
+				<h3 id="rel" align="center"> Relevance: {{comic['val']}} </h3>
+			</article>
+			{% if not loop.last %}
+				<hr>
+			{% endif %}
 		{% endif %}
 	{% endfor %}
 {% endblock %}

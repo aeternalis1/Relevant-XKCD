@@ -51,9 +51,5 @@ def search(query):
 			return redirect(url_for('index.loading', query=("-".join(clean_query))))
 	keywords = [x for x in clean_text(query.split('-')) if x]
 	if keywords:
-		comics = run(keywords)
-		if comics is None:
-			flash("No relevant XKCDs found.")
-		else:
-			return render_template('search.html', comics=comics, query=query.replace('-',' '))
+		return render_template('search.html', comics=run(keywords), query=query.replace('-',' '))
 	return render_template('index.html')
