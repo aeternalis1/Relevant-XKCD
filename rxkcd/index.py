@@ -1,8 +1,8 @@
-from db import get_img_url
-from search import run
-from scraper import num_xkcd
-from worker import conn
-from utils import clean_text
+from .db import get_img_url
+from .search import run
+from .scraper import num_xkcd
+from .worker import conn
+from .utils import clean_text
 
 from random import randint
 from rq import Queue

@@ -1,5 +1,5 @@
-from processor import get_relevance, get_related_comics, get_matches
-from db import get_comic
+from .processor import get_relevance, get_related_comics, get_matches
+from .db import get_comic
 import time
 import math
 
