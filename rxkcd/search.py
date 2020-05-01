@@ -24,11 +24,7 @@ def run(query):
 	for i in range(len(cand)):
 		matches = cand[i][1]
 		if top:
-<<<<<<< HEAD
 			cand[i][0] *= pow(tot/top, (matches/top-1))
-=======
-			cand[i][0] = val * pow(tot/top, (matches/top-1))
->>>>>>> 0bbeb587169354ba222faede49c0bb37c23a2a01
 
 	cand = sorted(cand,reverse=True)
 	num = min(10,len(cand))

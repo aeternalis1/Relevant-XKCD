@@ -40,12 +40,6 @@ def loading(query):
 	return render_template('loading.html', query=query, urls=rand_urls)
 
 
-def generator():
-	for i in range(10):
-		yield "hello"
-		time.sleep(5)
-
-
 @bp.route('/search/<query>', methods=('GET', 'POST'))
 def search(query):
 	if request.method == 'POST':
@@ -58,8 +52,5 @@ def search(query):
 			return redirect(url_for('index.loading', query=("-".join(clean_query))))
 	keywords = [x for x in clean_text(query.split('-')) if x]
 	if keywords:
-		time.sleep(5)
-		return Response(generator())
-		time.sleep(5)
 		return render_template('search.html', comics=run(keywords), query=query.replace('-',' '))
 	return render_template('index.html')
