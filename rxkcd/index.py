@@ -1,16 +1,27 @@
-from .db import get_img_url
-from .search import run
-from .scraper import num_xkcd
+from db import get_img_url
+from search import run
+from scraper import num_xkcd
+from worker import conn
+from utils import clean_text
+
 from random import randint
+from rq import Queue
+from rq.job import Job
+from rq.registry import StartedJobRegistry
 
 from flask import (
 	Blueprint, flash, g, redirect, render_template, request, session, url_for, Response
 )
 
-from .utils import clean_text
-import time
-
 bp = Blueprint('index', __name__)
+
+q = Queue('default', connection=conn)
+
+
+def add_job(keywords):
+	job = q.enqueue_call(func=run, args=(keywords,), result_ttl=5000, job_id="-".join(keywords))
+	return
+
 
 @bp.route('/', methods=('GET', 'POST'))
 def index():
@@ -37,20 +48,45 @@ def loading(query):
 			continue
 		seen.append(num)
 		rand_urls.append(comic['img_url'])
+	try:
+		job = Job.fetch("-".join(clean_text(query.split('-'))), connection=conn)
+		if job.get_status() == 'failed':
+			add_job(clean_text(query.split('-')))
+	except:
+		add_job(clean_text(query.split('-')))
 	return render_template('loading.html', query=query, urls=rand_urls)
 
 
 @bp.route('/search/<query>', methods=('GET', 'POST'))
 def search(query):
 	if request.method == 'POST':
-		query = request.form['query'].split()
-		clean_query = [x for x in clean_text(query) if x]
+		new_query = request.form['query'].split()
+		clean_query = [x for x in clean_text(new_query) if x]
 		if not clean_query:
 			flash("Invalid query.")
 			return render_template('search.html', comics=comics, query=query.replace('-',' '))
 		else:
 			return redirect(url_for('index.loading', query=("-".join(clean_query))))
-	keywords = [x for x in clean_text(query.split('-')) if x]
-	if keywords:
-		return render_template('search.html', comics=run(keywords), query=query.replace('-',' '))
-	return render_template('index.html')
+	else:
+		try:
+			job = Job.fetch(query, connection=conn)
+			if job.is_finished:
+				return render_template('search.html', comics=job.result, query=query.replace('-',' '))
+			elif job.get_status() == 'failed':
+				add_job(clean_text(query.split('-')))
+			return redirect(url_for('index.loading', query='-'.join(clean_text(query.split('-')))))
+		except:		# job not in queue
+			return redirect(url_for('index.loading', query='-'.join(clean_text(query.split('-')))))
+
+
+@bp.route('/results/<query>', methods=['GET'])
+def check_results(query):
+	try:
+		job = Job.fetch(query, connection=conn)
+		if job.is_finished:
+			return "job finished", 200
+		elif job.get_status() == 'failed':
+			add_job(clean_text(query.split('-')))
+		return "nay", 202
+	except:		# job not in queue
+		return "nay", 202
