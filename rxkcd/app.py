@@ -9,14 +9,14 @@ def create_app(test_config=None):
 	app.config.from_pyfile('config.py', silent=True)
 	app.secret_key = SECRET_KEY
 
-	from processor import nlp 	# makes spacy load processed during init
+	from .processor import nlp 	# makes spacy load processed during init
 
 	try:
 		os.makedirs(app.instance_path)
 	except OSError:
 		pass
 
-	import index
+	from . import index
 	app.register_blueprint(index.bp)
 
 	return app
