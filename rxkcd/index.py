@@ -1,8 +1,8 @@
-from .db import get_img_url
-from .search import run
-from .scraper import num_xkcd
-from .worker import conn
-from .utils import clean_text
+from db import get_img_url
+from search import run
+from scraper import num_xkcd
+from worker import conn
+from utils import clean_text
 
 from random import randint
 from rq import Queue
@@ -13,13 +13,18 @@ from flask import (
 	Blueprint, flash, g, redirect, render_template, request, session, url_for, Response
 )
 
+import time
+
 bp = Blueprint('index', __name__)
 
 q = Queue('default', connection=conn)
 
 
 def add_job(keywords):
-	job = q.enqueue(run, keywords, result_ttl=5000, job_id="-".join(keywords), job_timeout=len(keywords)*60)
+	try:
+		job = Job.fetch("-".join(keywords), connection=conn)
+	except:
+		job = q.enqueue_call(run, args=(keywords,), result_ttl=5000, failure_ttl=0, job_id="-".join(keywords))
 	return
 
 
@@ -48,12 +53,7 @@ def loading(query):
 			continue
 		seen.append(num)
 		rand_urls.append(comic['img_url'])
-	try:
-		job = Job.fetch("-".join(clean_text(query.split('-'))), connection=conn)
-		if job.get_status() == 'failed':
-			add_job(clean_text(query.split('-')))
-	except:
-		add_job(clean_text(query.split('-')))
+	add_job(clean_text(query.split('-')))
 	return render_template('loading.html', query=query, urls=rand_urls)
 
 
@@ -85,8 +85,6 @@ def check_results(query):
 		job = Job.fetch(query, connection=conn)
 		if job.is_finished:
 			return "job finished", 200
-		elif job.get_status() == 'failed':
-			add_job(clean_text(query.split('-')))
 		return "nay", 202
 	except:		# job not in queue
 		return "nay", 202

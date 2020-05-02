@@ -1,6 +1,6 @@
 from nltk.corpus import wordnet
-from .db import get_word_comics
-from .utils import clean_text
+from db import get_word_comics
+from utils import clean_text
 import spacy
 import math
 

@@ -20,11 +20,10 @@
 				            window.location.replace('/search/'+query);
 				            return false;
 				        }
-				        timeout = $timeout(poller, 2000);
+				        timeout = $timeout(poller, 5000);
 				    	}).
 					    error(function(error) {
 					    	$log.log(error);
-				            $timeout.cancel(timeout);
 					    });
 			    };
 			    poller();

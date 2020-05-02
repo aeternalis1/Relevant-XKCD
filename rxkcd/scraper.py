@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
-from .models import Comic
-from .utils import clean_text
-from .update_db import *
+from models import Comic
+from utils import clean_text
+from update_db import *
 import re
 import requests
 import time
