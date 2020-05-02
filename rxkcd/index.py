@@ -19,7 +19,7 @@ q = Queue('default', connection=conn)
 
 
 def add_job(keywords):
-	job = q.enqueue_call(func=run, args=(keywords,), result_ttl=5000, job_id="-".join(keywords))
+	job = q.enqueue_call(func=run, args=(keywords,), result_ttl=5000, job_id="-".join(keywords), job_timeout=len(keywords)*60)
 	return
 
 
