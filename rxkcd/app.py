@@ -1,7 +1,7 @@
 import os
 
 from flask import Flask
-from instance.config import SECRET_KEY
+from .instance.config import SECRET_KEY
 import spacy
 
 def create_app(test_config=None):
