@@ -6,10 +6,12 @@ import math
 
 def run(query):
 	keywords = []
+	print ("1",time.time())
 	for word in query:
 		if word not in keywords:
 			keywords.append(word)
 	pos = get_related_comics(keywords)
+	print (2,time.time())
 	cand = []
 	top = 0
 	tot = 0
@@ -21,7 +23,7 @@ def run(query):
 		cand.append([val, matches, comic_id, comic])
 		top = max(top, matches)
 		tot += matches
-
+	print (3,time.time())
 	for i in range(len(cand)):
 		matches = cand[i][1]
 		if top:
