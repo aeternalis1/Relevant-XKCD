@@ -3,7 +3,8 @@ import os
 import redis
 from rq import Worker, Queue, Connection
 
-from processor import nlp
+from processor import nlp, get_relevance, get_related_comics, get_matches
+from db import get_comic
 
 listen = ['default']
 

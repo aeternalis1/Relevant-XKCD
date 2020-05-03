@@ -5,7 +5,7 @@ from utils import clean_text
 from processor import get_relevance, get_related_comics, get_matches
 
 from random import randint
-from rq import Queue, get_current_job
+from rq import Queue
 from rq.job import Job
 from rq.registry import StartedJobRegistry
 
@@ -22,7 +22,6 @@ q = Queue('default', connection=conn)
 
 
 def run(query):
-	job = get_current_job()
 	keywords = []
 	for word in query:
 		if word not in keywords:
