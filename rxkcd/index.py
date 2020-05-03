@@ -1,8 +1,8 @@
-from .db import get_img_url, get_comic
-from .scraper import num_xkcd
-from .worker import conn
-from .utils import clean_text
-from .processor import get_relevance, get_related_comics, get_matches
+from db import get_img_url, get_comic
+from scraper import num_xkcd
+from worker import conn
+from utils import clean_text
+from processor import get_relevance, get_related_comics, get_matches
 
 from random import randint
 from rq import Queue, get_current_job
@@ -24,16 +24,11 @@ q = Queue('default', connection=conn)
 def run(query):
 	job = get_current_job()
 	keywords = []
-	print ("1",time.time())
-	job.meta['status'] = 1
-	job.save_meta()
 	for word in query:
 		if word not in keywords:
 			keywords.append(word)
 	pos = get_related_comics(keywords)
-	print (2,time.time())
-	job.meta['status'] = 2
-	job.save_meta()
+
 	cand = []
 	top = 0
 	tot = 0
@@ -45,9 +40,7 @@ def run(query):
 		cand.append([val, matches, comic_id, comic])
 		top = max(top, matches)
 		tot += matches
-	print (3,time.time())
-	job.meta['status'] = 3
-	job.save_meta()
+
 	for i in range(len(cand)):
 		matches = cand[i][1]
 		if top:
@@ -65,8 +58,7 @@ def run(query):
 					'title': comic['og_title'],
 					'title_text': comic['og_ttext']
 				  })
-	job.meta['status'] = 4
-	job.save_meta()
+
 	return res
 
 
@@ -74,9 +66,7 @@ def add_job(keywords):
 	try:
 		job = Job.fetch("-".join(keywords), connection=conn)
 	except:
-		job = q.enqueue_call(run, args=(keywords,), result_ttl=5000, failure_ttl=0, job_id="-".join(keywords))
-		job.meta['status'] = 0
-		job.save_meta()
+		job = q.enqueue_call(run, args=(keywords,), result_ttl=50, failure_ttl=0, job_id="-".join(keywords))
 	return
 
 
@@ -135,10 +125,6 @@ def check_results(query):
 		job = Job.fetch(query, connection=conn)
 	except:
 		return "nay", 202
-	print (job.get_status(), job.meta['status'])
 	if job.is_finished:
-		print (job.enqueued_at)
-		print (job.started_at)
-		print (job.ended_at)
 		return "job done", 200
 	return "nay", 202
