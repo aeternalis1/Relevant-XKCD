@@ -26,6 +26,7 @@ def add_job(keywords):
 	except:
 		job = q.enqueue_call(run, args=(keywords,), result_ttl=5000, failure_ttl=0, job_id="-".join(keywords))
 		job.meta['status'] = 0
+		job.save_meta()
 	return
 
 

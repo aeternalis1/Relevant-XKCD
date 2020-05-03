@@ -11,12 +11,14 @@ def run(query):
 	keywords = []
 	print ("1",time.time())
 	job.meta['status'] = 1
+	job.save_meta()
 	for word in query:
 		if word not in keywords:
 			keywords.append(word)
 	pos = get_related_comics(keywords)
 	print (2,time.time())
 	job.meta['status'] = 2
+	job.save_meta()
 	cand = []
 	top = 0
 	tot = 0
@@ -30,6 +32,7 @@ def run(query):
 		tot += matches
 	print (3,time.time())
 	job.meta['status'] = 3
+	job.save_meta()
 	for i in range(len(cand)):
 		matches = cand[i][1]
 		if top:
@@ -48,4 +51,5 @@ def run(query):
 					'title_text': comic['og_ttext']
 				  })
 	job.meta['status'] = 4
+	job.save_meta()
 	return res
