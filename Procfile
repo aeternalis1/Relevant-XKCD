@@ -1,2 +1,2 @@
-web: gunicorn --workers=5 rxkcd.app:app --preload
+web: gunicorn --workers=5 --chdir rxkcd app:app --preload
 worker: python rxkcd/worker.py
