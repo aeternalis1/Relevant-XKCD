@@ -84,6 +84,7 @@ def check_results(query):
 	try:
 		job = Job.fetch(query, connection=conn)
 		if job.is_finished:
+			print (job.enqueued_at, job.started_at, job.ended_at)
 			return "job finished", 200
 		return "nay", 202
 	except:		# job not in queue
