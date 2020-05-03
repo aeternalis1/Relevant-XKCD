@@ -84,7 +84,10 @@ def check_results(query):
 	try:
 		job = Job.fetch(query, connection=conn)
 		if job.is_finished:
-			return ", ".join([job.enqueued_at, job.started_at, job.ended_at]), 200
+			try:
+				return ", ".join([job.enqueued_at, job.started_at, job.ended_at]), 200
+			except:
+				return "rip", 200
 		return "nay", 202
 	except:		# job not in queue
 		return "nay", 202
