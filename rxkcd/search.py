@@ -1,17 +1,22 @@
 from .processor import get_relevance, get_related_comics, get_matches
 from .db import get_comic
 
+from rq import get_current_job
+
 import time
 import math
 
 def run(query):
+	job = get_current_job()
 	keywords = []
 	print ("1",time.time())
+	job.meta['status'] = 1
 	for word in query:
 		if word not in keywords:
 			keywords.append(word)
 	pos = get_related_comics(keywords)
 	print (2,time.time())
+	job.meta['status'] = 2
 	cand = []
 	top = 0
 	tot = 0
@@ -24,6 +29,7 @@ def run(query):
 		top = max(top, matches)
 		tot += matches
 	print (3,time.time())
+	job.meta['status'] = 3
 	for i in range(len(cand)):
 		matches = cand[i][1]
 		if top:
@@ -41,5 +47,5 @@ def run(query):
 					'title': comic['og_title'],
 					'title_text': comic['og_ttext']
 				  })
-
+	job.meta['status'] = 4
 	return res
