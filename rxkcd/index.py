@@ -113,7 +113,7 @@ def search(query):
 			job = Job.fetch(query, connection=conn)
 			if job.is_finished:
 				if job.result:
-					return render_template('search.html', comics=job.result, query=query.replace('-',' '))
+					return render_template('search.html', comics=job.result, query=query.replace('-',' '), res=1)
 				else:
 					return render_template('search.html', query=query.replace('-',' '), res=0)
 			return redirect(url_for('index.loading', query='-'.join(clean_text(query.split('-')))))
