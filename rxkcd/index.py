@@ -65,7 +65,7 @@ def add_job(keywords):
 	try:
 		job = Job.fetch("-".join(keywords), connection=conn)
 	except:
-		job = q.enqueue_call(run, args=(keywords,), result_ttl=50, failure_ttl=0, job_id="-".join(keywords))
+		job = q.enqueue_call(run, args=(keywords,), result_ttl=5000, failure_ttl=0, job_id="-".join(keywords))
 	return
 
 
@@ -112,7 +112,10 @@ def search(query):
 		try:
 			job = Job.fetch(query, connection=conn)
 			if job.is_finished:
-				return render_template('search.html', comics=job.result, query=query.replace('-',' '))
+				if job.result:
+					return render_template('search.html', comics=job.result, query=query.replace('-',' '))
+				else:
+					return render_template('search.html', query=query.replace('-',' '), res=0)
 			return redirect(url_for('index.loading', query='-'.join(clean_text(query.split('-')))))
 		except:		# job not in queue
 			return redirect(url_for('index.loading', query='-'.join(clean_text(query.split('-')))))
