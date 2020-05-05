@@ -1,11 +1,12 @@
 <html ng-app="rxkcdApp">
-    <header><title>Loading</title></header>
+    <title>Loading</title>
     <head>
         <link rel="stylesheet" href="{{url_for('static', filename='loading.css')}}">
         <link rel="icon" href="https://xkcd.com/s/919f27.ico" type="image/x-icon"/>
+        <link rel="shortcut icon" href="https://xkcd.com/s/919f27.ico" type="image/x-icon"/>
         <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
     </head>
-    <body ng-controller="rxkcdController" ng-init="showResults('{{query}}')">
+    <body ng-controller="rxkcdController" ng-init="showResults('{{stype}}', '{{query}}')">
         <div class="fadein">
             <h1 align="center"> Loading... </h1>
             <img id="f9" src="{{urls[9]}}">
@@ -21,5 +22,4 @@
         </div>
     </body>
     <script src="{{ url_for('static', filename='loading.js') }}"></script>
-    <!--<script> window.location.replace('/search/{{query}}'); </script>-->
 </html>

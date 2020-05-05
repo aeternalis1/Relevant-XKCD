@@ -6,9 +6,12 @@
 
 {% block content %}
 	<form method="post">
-		<label for="query"> New Search </label>
+		<label for="query"> Find relevant XKCDs </label>
 		<input name="query" id="query" required>
-		<input type="submit" value="Search!">
+		<div id="sub_button">
+			<input type="submit" name="search_button" value="Normal search!">
+			<input type="submit" name="search_button" value="Heavy search!">
+		</div>
 	</form>
 	<h1> search results for: {{query}}</h1>
 	{% if res %}
