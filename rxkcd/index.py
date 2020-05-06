@@ -122,9 +122,9 @@ def search(stype, query):
 					return render_template('search.html', comics=job.result, query=query.replace('-',' '), res=1)
 				else:
 					return render_template('search.html', query=query.replace('-',' '), res=0)
-			return redirect(url_for('index.loading', query='-'.join(clean_text(query.split('-')))))
+			return redirect(url_for('index.loading', stype=stype, query='-'.join(clean_text(query.split('-')))))
 		except:		# job not in queue
-			return redirect(url_for('index.loading', query='-'.join(clean_text(query.split('-')))))
+			return redirect(url_for('index.loading', stype=stype, query='-'.join(clean_text(query.split('-')))))
 
 
 @bp.route('/results/<stype>/<query>', methods=['GET'])
