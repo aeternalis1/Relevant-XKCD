@@ -1,3 +1,8 @@
+@font-face {
+  font-family: xkcdFont;
+  src: url("xkcd-script.woff") format('woff');
+}
+
 body{
   background-color: #96A8C8;
 }
@@ -10,7 +15,7 @@ h1 {
 
 .fadein {
   display: flex;
-  height: 100%;
+  height: 50%;
   width: 100%;
   justify-content: center; /* center horizontal */
   align-items: center; /* center vertical */
@@ -24,6 +29,31 @@ h1 {
   border-width: 1.5px;
   border-color: black;
   border-radius: 12px;
+  position: absolute;
+  -webkit-animation-name: fade;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-duration: 10s;
+  animation-name: fade;
+  animation-iteration-count: infinite;
+  animation-duration: 10s;
+  max-height: 50%;
+  max-width: 80%;
+  opacity: 0;
+}
+
+.ttexts {
+  display: flex;
+  height: 25%;
+  width: 100%;
+  justify-content: center; /* center horizontal */
+  align-items: center; /* center vertical */
+  overflow: hidden;
+  text-align: center;
+}
+
+.ttexts div {
+  font-family: xkcdFont;
+  font-size: 24;
   position: absolute;
   -webkit-animation-name: fade;
   -webkit-animation-iteration-count: infinite;

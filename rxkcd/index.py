@@ -89,18 +89,20 @@ def index():
 @bp.route('/loading/<stype>/<query>')
 def loading(stype, query):
 	rand_urls = []
+	rand_ttexts = []
 	seen = []
 	while len(rand_urls) < 10:
 		num = randint(1,num_xkcd)
 		if num in seen:
 			continue
-		comic = get_img_url(num)
+		comic = get_comic(num)
 		if not comic or 'img_url' not in comic:
 			continue
 		seen.append(num)
 		rand_urls.append(comic['img_url'])
+		rand_ttexts.append(comic['og_ttext'])
 	add_job(clean_text(query.split('-')), stype)
-	return render_template('loading.html', stype=stype, query=query, urls=rand_urls)
+	return render_template('loading.html', stype=stype, query=query, urls=rand_urls, ttexts=rand_ttexts)
 
 
 @bp.route('/search/<stype>/<query>', methods=('GET', 'POST'))
