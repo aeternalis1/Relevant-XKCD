@@ -15,3 +15,8 @@ This project can be found [here](https://rxkcd.herokuapp.com), deployed on Herok
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+
+
+## Acknowledgements
+
+The font used in loading screen was taken from [https://github.com/ipython/xkcd-font](https://github.com/ipython/xkcd-font).
