@@ -1,3 +1,4 @@
+APScheduler==3.6.3
 beautifulsoup4==4.9.0
 blis==0.4.1
 bs4==0.0.1
@@ -21,15 +22,18 @@ numpy==1.18.3
 plac==1.1.3
 preshed==3.0.2
 pymongo==3.10.1
+pytz==2020.1
 redis==3.4.1
 regex==2020.4.4
 requests==2.23.0
 rq==1.3.0
+six==1.14.0
 soupsieve==2.0
 spacy==2.2.4
 srsly==1.0.2
 thinc==7.4.0
 tqdm==4.45.0
+tzlocal==2.1
 urllib3==1.25.9
 wasabi==0.6.0
 Werkzeug==1.0.1
