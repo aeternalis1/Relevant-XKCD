@@ -1,4 +1,4 @@
-from db import get_img_url, get_comic
+from db import get_img_url, get_comic, get_recent
 from scraper import num_xkcd
 from worker import conn
 from utils import clean_text
@@ -15,6 +15,7 @@ from flask import (
 
 import time
 import math
+from apscheduler.schedulers.background import BackgroundScheduler
 
 bp = Blueprint('index', __name__)
 
@@ -138,3 +139,10 @@ def check_results(stype, query):
 	if job.is_finished:
 		return "job done", 200
 	return "nay", 202
+
+
+sched = BackgroundScheduler({'apscheduler.timezone': 'America/Toronto'}, daemon=True)
+
+@sched.scheduled_job('interval', hours=12)
+def timed_update():
+	job = q.enqueue_call(get_recent, result_ttl=0, failure_ttl=0, job_id="check_recent")

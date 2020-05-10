@@ -1,5 +1,7 @@
 import pymongo
 import requests
+from apscheduler.schedulers.background import BackgroundScheduler
+
 from instance.config import MONGO_URI
 
 client = pymongo.MongoClient(MONGO_URI)
@@ -57,7 +59,7 @@ def update_wordbank_one(comic):		# updates wordbank with single new comic
 						break
 
 
-def update_wordbank_many(wordbank):		# updates given list of words
+def update_wordbank_many(wordbank):		# resets wordbank 
 	col = db["wordbank"]
 
 	col.delete_many({})
@@ -120,6 +122,7 @@ def trim_db():
 
 def exists(path):
     r = requests.head(path)
+    print (r.status_code)
     return r.status_code == requests.codes.ok
 
 

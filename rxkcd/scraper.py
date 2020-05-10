@@ -109,7 +109,7 @@ def get_info(comic_num):
 	return result
 
 
-num_xkcd = 2295
+num_xkcd = 2296
 
 
 # gets comics and wordbank
@@ -139,7 +139,7 @@ def scrape_pages():
 		wordbank[word] = sorted(wordbank[word], reverse = True)[:min(20,len(wordbank[word]))]
 
 	update_wordbank_many(wordbank)
-	update_comics_many(comics)
+	#update_comics_many(comics)
 
 
 def add_comic(comic_num):

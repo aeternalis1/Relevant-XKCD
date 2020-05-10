@@ -53,7 +53,7 @@ h1 {
 
 .ttexts div {
   font-family: xkcdFont;
-  font-size: 24;
+  font-size: 20;
   position: absolute;
   -webkit-animation-name: fade;
   -webkit-animation-iteration-count: infinite;
