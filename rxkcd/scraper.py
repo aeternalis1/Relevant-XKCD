@@ -53,7 +53,7 @@ def get_ttext(comic_num):
 			if span.text == 'Title text:':
 				cur = span.parent
 				return " ".join(cur.text.split()[2:])
-		return "[Title text unavailable]"
+		return "Title text unavailable"
 
 
 def get_info(comic_num):
@@ -109,15 +109,12 @@ def get_info(comic_num):
 	return result
 
 
-num_xkcd = 2296
-
-
-# gets comics and wordbank
+# gets comics and wordbank for comics [l,r] inclusive
 # initially wordbank just stores words and comics in which that word appear (along with # of occurrences)
-def scrape_pages():
+def scrape_pages(l, r):
 	comics = {}
 	wordbank = {}
-	for i in range(1, num_xkcd+1):
+	for i in range(l, r+1):
 		try:
 			comic = get_info(i)
 			words = {}
@@ -138,8 +135,8 @@ def scrape_pages():
 	for word in wordbank:
 		wordbank[word] = sorted(wordbank[word], reverse = True)[:min(20,len(wordbank[word]))]
 
-	update_wordbank_many(wordbank)
-	#update_comics_many(comics)
+	#update_wordbank_many(wordbank)
+	update_comics_many(comics)
 
 
 def add_comic(comic_num):
@@ -172,4 +169,4 @@ def add_og_ttexts():
 
 
 if __name__ == "__main__":
-	scrape_pages()
+	scrape_pages(1525,1525)

@@ -39,7 +39,6 @@ def run(query, stype):
 
 		for comic_id in pos:
 			comic = get_comic(comic_id)
-			print (comic_id, comic)
 			matches = get_matches(keywords, comic)
 			val = min(1, get_relevance(keywords, comic) * math.log(matches+10, 10))
 			cand.append([val, matches, comic_id, comic])
@@ -98,7 +97,7 @@ def loading(stype, query):
 		if num in seen:
 			continue
 		comic = get_comic(num)
-		if not comic or 'img_url' not in comic:
+		if not comic or 'img_url' not in comic or 'og_ttext' not in comic:
 			continue
 		seen.append(num)
 		rand_urls.append(comic['img_url'])

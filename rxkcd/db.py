@@ -1,8 +1,8 @@
 import pymongo
 
 from instance.config import MONGO_URI
-from update_db import insert_comic, update_wordbank_one, exists
-from scraper import get_info
+from update_db import exists
+from scraper import add_comic
 
 client = pymongo.MongoClient(MONGO_URI)
 db = client["xkcd"]
@@ -50,7 +50,5 @@ def get_recent():
 			if exists("https://xkcd.com/%d/" % j):
 				recent.append(j)
 		if len(recent) > 5:		# want to give some buffer time to allow explainXKCD to update
-			comic = get_info(recent[0])
-			insert_comic(comic)
-			update_wordbank_one(comic)
+			add_comic(recent[0])
 			col.update_one({"_id": "latest_comic"}, {"$set": {"num": recent[0]}})
