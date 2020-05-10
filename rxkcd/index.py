@@ -39,6 +39,7 @@ def run(query, stype):
 
 		for comic_id in pos:
 			comic = get_comic(comic_id)
+			print (comic_id, comic)
 			matches = get_matches(keywords, comic)
 			val = min(1, get_relevance(keywords, comic) * math.log(matches+10, 10))
 			cand.append([val, matches, comic_id, comic])
